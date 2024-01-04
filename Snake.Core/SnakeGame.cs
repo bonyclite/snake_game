@@ -49,8 +49,31 @@ public class SnakeGame
             {
                 if (_snakeDirections.Count != 0)
                 {
-                    _previousDirection = direction;
-                    direction = _snakeDirections.Take();
+                    var newDirection = _snakeDirections.Take();
+                    
+                    switch (newDirection)
+                    {
+                        case SnakeDirection.Right or SnakeDirection.Left:
+                            if (_previousDirection is null or SnakeDirection.Up or SnakeDirection.Down)
+                            {
+                                direction = newDirection;
+                                _previousDirection = direction;
+                            }
+                            
+                            break;
+                        
+                        case SnakeDirection.Up or SnakeDirection.Down:
+                            if (_previousDirection is null or SnakeDirection.Left or SnakeDirection.Right)
+                            {
+                                direction = newDirection;
+                                _previousDirection = direction;
+                            }
+                            
+                            break;
+                        
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
                 
                 var previousHead = _field.Head;
@@ -61,35 +84,19 @@ public class SnakeGame
                 switch (direction)
                 {
                     case SnakeDirection.Left:
-                        if (_previousDirection is null or SnakeDirection.Up or SnakeDirection.Down)
-                        {
-                            head.Column--;
-                        }
-
+                        head.Column--;
                         break;
 
                     case SnakeDirection.Right:
-                        if (_previousDirection is null or SnakeDirection.Up or SnakeDirection.Down)
-                        {
-                            head.Column++;
-                        }
-
+                        head.Column++;
                         break;
 
                     case SnakeDirection.Up:
-                        if (_previousDirection is null or SnakeDirection.Right or SnakeDirection.Left)
-                        {
-                            head.Row--;
-                        }
-
+                        head.Row--;
                         break;
 
                     case SnakeDirection.Down:
-                        if (_previousDirection is null or SnakeDirection.Right or SnakeDirection.Left)
-                        {
-                            head.Row++;
-                        }
-
+                        head.Row++;
                         break;
 
                     default:
